@@ -8,7 +8,7 @@ You will need either a TM4C123 or an MSP432 LaunchPad and an MK-II BoosterPack. 
 
 The Lab 1 starter project using the LaunchPad and the Educational BoosterPack MK-II (BOOSTXL-EDUMKII) is a fitness device. It inputs from the microphone, accelerometer, light sensor and buttons. It performs some simple measurements and calculations of steps, sound intensity, and light intensity. It outputs data to the LCD and it generates simple beeping sounds. Figure Lab1.1 shows the data flow graph of Lab 1. Your assignment in Lab 1 is to increase the rate of Task0 from 10 to 1000 Hz.
 
-[Figure Lab1.1.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.1dataFlow.jpg)  
+![Figure Lab1.1.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.1dataFlow.jpg)  
 *Data flow graph of Lab 1.*
 
 This simple fitness device has six tasks. Normally, one would use interrupts to create real-time periodic events. However, Lab 1 will run without interrupts to illustrate the need for an operating system to manage multiple tasks that are only loosely connected. A very poorly constructed main program runs four of the tasks at about 10 times a second and the other two tasks at about once a second. One of the best ways to see how the six tasks fit together is to understand the data being passed.
@@ -46,16 +46,16 @@ The main program manages these six tasks. We can define the real-time performanc
 
 In addition to the above quantitative measures, you will be able to visualize the execution profile of the system using a logic analyzer. Each task in Lab 1 toggles both a virtual logic analyzer and a real logic analyzer when it starts. For example, Task0 calls TExaS_Task0(). The first parameter to the function TExaS_Init() will be GRADER or LOGICANALYZER. Calling TExaS_Task0() in grader mode performs the lab grading. However in logic analyzer mode, these calls implement the virtual logic analyzer and viewed with TExaSdisplay. Figure Lab1.2 shows a typical profile measured with the TExaS logic analyzer.
 
-[Figure Lab1.2.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.2_LogicZoomIn.jpg)  
+![Figure Lab1.2.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.2_LogicZoomIn.jpg)  
 *Task profile measured on the Lab 1 solution using TExaS. Notice Task0 is running about every 1ms. Notice Tasks 1, 3, and 4 are running about every 100ms. Notice that Task 0 looses samples whenever Tasks 2 and 5 run.*
 
-[Figure Lab1.3.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.3_LogicZoomOut.jpg)  
+![Figure Lab1.3.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.3_LogicZoomOut.jpg)  
 *Task profile measured on the Lab 1 solution using TExaS. Notice Tasks 2 and 5 are running about every 1s.*
 
-[Figure Lab1.4](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.3_LogicZoomOut.jpg)  
+![Figure Lab1.4](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.3_LogicZoomOut.jpg)  
 *Shows the grader output of a typical solution to Lab 1.*
 
-[Figure Lab1.4.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.4_TypicalGradingjpg.jpg)  
+![Figure Lab1.4.](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%201%20Introduction%20to%20IO/Lab1.4_TypicalGradingjpg.jpg)  
 *Grader output for the Lab 1 solution.*
 
 Notice the software toggles the logic analyzer pin every time the thread runs. This results in a logic analyzer frequency that is 1/2 the thread frequency. I.e., a 500 Hz squarewave means the signal is toggled at 1000 Hz.
