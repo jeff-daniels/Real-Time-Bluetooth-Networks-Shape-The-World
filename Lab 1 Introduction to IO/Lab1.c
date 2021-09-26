@@ -125,7 +125,7 @@ enum plotstate PlotState = Accelerometer;
 //------------ end of Global variables shared between tasks -------------
 
 //---------------- Task0 samples sound from microphone ----------------
-//#define SOUNDRMSLENGTH 10   // number of samples to collect before calculating RMS (may overflow if greater than 4104)
+// #define SOUNDRMSLENGTH 10   // number of samples to collect before calculating RMS (may overflow if greater than 4104)
 #define SOUNDRMSLENGTH 1000 // number of samples to collect before calculating RMS (may overflow if greater than 4104)
 int16_t SoundArray[SOUNDRMSLENGTH];
 // *********Task0_Init*********
@@ -478,12 +478,15 @@ int main(void){
   Time = 0;
   EnableInterrupts(); // interrupts needed for grader to run
   while(1){
+		
     for(int i=0; i<10; i++){ // runs at about 10 Hz
-      Task0();  // sample microphone
+			for(int j=0; j<100; j++){
+				Task0();  // sample microphone
+			  BSP_Delay1ms(1);
+			}
       Task1();  // sample accelerometer
       Task3();  // check the buttons and change mode if pressed
       Task4();  // update the plot
-      BSP_Delay1ms(100);
     }
     Task2();   // sample light at 1 Hz
     Task5();   // update the LCD text at 1 Hz
