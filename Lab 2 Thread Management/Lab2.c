@@ -472,7 +472,7 @@ int main_step3 (void){
 }
 //***************Step 4*************************
 // Increase to 4 threads
-int main(void){
+int main_step4(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   Task0_Init();    // microphone init
@@ -497,7 +497,7 @@ int main(void){
 //***************Step 5*************************
 // add one periodic task
 void Dummy(void){}; // place holder
-int main_step5(void){
+int main(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   Task0_Init();    // microphone init
@@ -516,8 +516,8 @@ int main_step5(void){
   // Task2, Task3, Task4, Task5 are main threads
   OS_AddThreads(&Task2, &Task3, &Task4, &Task5);
   // when grading change 1000 to 4-digit number from edX
-  TExaS_Init(GRADER, 1000);          // initialize the Lab 2 grader
-//  TExaS_Init(LOGICANALYZER, 1000); // initialize the Lab 2 logic analyzer
+//  TExaS_Init(GRADER, 1000);          // initialize the Lab 2 grader
+  TExaS_Init(LOGICANALYZER, 1000); // initialize the Lab 2 logic analyzer
   OS_Launch(BSP_Clock_GetFreq()/THREADFREQ); // doesn't return, interrupts enabled in here
   return 0;             // this never executes
 }

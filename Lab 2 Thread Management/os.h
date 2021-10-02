@@ -33,7 +33,6 @@ struct tcb{
   struct tcb *next;  // linked-list pointer
 };
 typedef struct tcb tcbType;
-
 // ******** OS_Init ************
 // Initialize operating system, disable interrupts
 // Initialize OS controlled I/O: systick, bus clock as fast as possible
