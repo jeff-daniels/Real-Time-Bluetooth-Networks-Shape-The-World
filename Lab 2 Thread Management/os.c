@@ -115,7 +115,9 @@ void Scheduler(void){ // every time slice
 // Outputs: none
 void OS_InitSemaphore(int32_t *semaPt, int32_t value){
   //***YOU IMPLEMENT THIS FUNCTION*****
-
+	DisableInterrupts();
+	(*semaPt) = value;
+	EnableInterrupts();
 }
 
 // ******** OS_Wait ************
@@ -125,7 +127,13 @@ void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Wait(int32_t *semaPt){
-
+  DisableInterrupts();
+  while((*semaPt) == 0){
+    EnableInterrupts(); // interrupts can occur here
+    DisableInterrupts();
+  }
+  (*semaPt) = (*semaPt) - 1;
+  EnableInterrupts();
 }
 
 // ******** OS_Signal ************
@@ -136,7 +144,9 @@ void OS_Wait(int32_t *semaPt){
 // Outputs: none
 void OS_Signal(int32_t *semaPt){
 //***YOU IMPLEMENT THIS FUNCTION*****
-
+  DisableInterrupts();
+  (*semaPt) = (*semaPt) + 1;
+  EnableInterrupts();
 }
 
 

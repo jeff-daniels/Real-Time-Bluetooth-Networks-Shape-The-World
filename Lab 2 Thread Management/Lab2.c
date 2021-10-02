@@ -395,7 +395,7 @@ void Task5(void){int32_t soundSum;
 /*          End of Task5 Section              */
 /* ****************************************** */
 
-int main(void){
+int main_final(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   Task0_Init();    // microphone init
@@ -419,7 +419,7 @@ int main(void){
 //******************Step 1**************************
 // implement and test the semaphores
 int32_t s1,s2;
-int main_step1(void){
+int main(void){
   OS_InitSemaphore(&s1,0);
   OS_InitSemaphore(&s2,1);
   while(1){
