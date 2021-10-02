@@ -13,7 +13,7 @@
 
 We want you to understand how an RTOS works and demonstrate your understanding by completing a set of activities. The Lab 2 starter project using the LaunchPad and the Educational BoosterPack MKII (BOOSTXL-EDUMKII) is again a fitness device. However, the starter project will not execute until you implement a very simple RTOS. The user code inputs from the microphone, accelerometer, temperature sensor and switches. It performs some simple measurements and calculations of steps, sound intensity, and temperature. It outputs data to the LCD and it generates simple beeping sounds. Figure Lab2.1 shows the data flow graph of Lab 2. Your assignment is to first understand the concepts of the chapter in general and the projects RTOS_xxx and RoundRobin_xxx in specific. Your RTOS will run two periodic threads and four main threads. Sections 2.3.1 – 2.3.6 develops an RTOS that runs three main threads and your system must run four main threads. Section 2.3.7 explains how to extend the Scheduler() function so that it also runs periodic tasks. Section 2.4.2 explains how to implement spinlock semaphores.
 
-![Data flow graph]()  
+![Data flow graph](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%202%20Thread%20Management/Lab2.1dataFlow.jpg)  
 *Figure 2.1. Data flow graph of Lab 2.*
 
 This simple fitness device has six tasks: two periodic and four main threads. Since we have two periodic threads to schedule, we could have used interrupts on two hardware timers to run the real-time periodic threads. However, Lab 2 will run with just SysTick interrupts to run two the periodic threads and to switch between the four main threads. These are the six tasks:
