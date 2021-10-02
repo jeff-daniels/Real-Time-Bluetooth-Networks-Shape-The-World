@@ -139,7 +139,9 @@ void Scheduler(void){ // every time slice
   // run any periodic event threads if needed
   // implement round robin scheduler, update RunPt
   //***YOU IMPLEMENT THIS FUNCTION*****
+	RunPt = RunPt->next;    // Round Robin
 
+	
 }
 
 // ******** OS_InitSemaphore ************
