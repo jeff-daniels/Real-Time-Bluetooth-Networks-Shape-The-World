@@ -419,7 +419,7 @@ int main_final(void){
 //******************Step 1**************************
 // implement and test the semaphores
 int32_t s1,s2;
-int main(void){
+int main_step1(void){
   OS_InitSemaphore(&s1,0);
   OS_InitSemaphore(&s2,1);
   while(1){
@@ -435,7 +435,7 @@ int main(void){
 // Implement the three mailbox functions as defined in OS.c and OS.h
 // Use this a simple main program to test the mailbox functions.
 uint32_t Out;
-int main_step2(void){ uint32_t in=0;
+int main(void){ uint32_t in=0;
   OS_MailBox_Init();
   while(1){
     OS_MailBox_Send(in);

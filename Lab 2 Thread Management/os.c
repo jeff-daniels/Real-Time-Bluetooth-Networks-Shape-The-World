@@ -12,7 +12,6 @@
 // function definitions in osasm.s
 void StartOS(void);
 
-
 tcbType tcbs[NUMTHREADS];
 tcbType *RunPt;
 int32_t Stacks[NUMTHREADS][STACKSIZE];
@@ -157,9 +156,14 @@ void OS_Signal(int32_t *semaPt){
 // Producer is an event thread, consumer is a main thread
 // Inputs:  none
 // Outputs: none
+uint32_t Mail;	// shared data
+int32_t Send; 		// semaphore
+
 void OS_MailBox_Init(void){
   // include data field and semaphore
   //***YOU IMPLEMENT THIS FUNCTION*****
+	OS_InitSemaphore(&Send, 0); // semaphore
+	Mail = 0;  									// shared data
 
 }
 
@@ -171,7 +175,8 @@ void OS_MailBox_Init(void){
 // Errors: data lost if MailBox already has data
 void OS_MailBox_Send(uint32_t data){
   //***YOU IMPLEMENT THIS FUNCTION*****
-
+		Mail = data;
+		OS_Signal(&Send);
 }
 
 // ******** OS_MailBox_Recv ************
@@ -184,6 +189,8 @@ void OS_MailBox_Send(uint32_t data){
 // Errors:  none
 uint32_t OS_MailBox_Recv(void){ uint32_t data;
   //***YOU IMPLEMENT THIS FUNCTION*****
+	OS_Wait(&Send);
+  data = Mail; // read mail
   return data;
 }
 
