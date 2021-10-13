@@ -18,7 +18,7 @@ The objectives of Lab 3 are:
 
 As we progress through this class, your RTOS will become more and more complex. The Lab 3 starter project using the LaunchPad and the Educational BoosterPack MKII (BOOSTXL-EDUMKII) is again a fitness device. Just like Lab 2, the starter project will not execute until you implement the necessary RTOS functions. Consider reusing code from Lab 2. The user code inputs from the microphone, accelerometer, light sensor, temperature sensor and switches. It performs some simple measurements and calculations of steps, sound intensity, light intensity, and temperature. It outputs data to the LCD and it generates simple beeping sounds. Figure Lab3.1 shows the data flow graph of Lab 3. Your assignment is to first understand the concepts of the chapter in general and the software programs in specific. Your RTOS will run two periodic threads and six main threads. Section 3.1 develops cooperation using OS_Suspend. Section 3.2 develops blocking semaphores. Section 3.3 explains how to implement a first-in-first-out queue. Section 3.4 shows how to implement sleeping. Section 3.5 presents the means to run periodic tasks using the hardware timers.
 
-![Data flow graph]()
+![Data flow graph](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%203%20Blocking%2C%20Sleeping%20and%20FIFO%20Queue/Lab3.1dataFlow.jpg)  
 *Figure Lab3.1. Data flow graph of Lab 3.*
 
 This simple fitness device has eight tasks: two periodic and six main threads. Since you have two periodic threads to schedule, you could use one hardware timer to run both tasks, or you could use two hardware timers, one for each task. You will continue to use SysTick interrupts to switch between the six main threads. These are the eight tasks:
@@ -44,10 +44,10 @@ Your RTOS manages these eight tasks. We will use the same metrics as described a
 
 In addition to the above quantitative measures, you will be able to visualize the execution profile of the system using a logic analyzer. Tasks 0 to 6 toggle both the virtual logic analyzer and a real logic analyzer when they start. For example, Task0 calls **TExaS_Task0()**. The first parameter to the function **TExaS_Init()** will be **GRADER** or **LOGICANALYZER**. Just like Labs 1 and 2, calling **TExaS_Task0()** in grader mode performs the lab grading. However in logic analyzer mode, these calls implement the virtual logic analyzer and can be viewed with **TExaSdisplay**. Figure Lab3.2 shows the profile of one possible lab solution measured with the TExaS logic analyzer.
 
-![Task Profile]()
+![Task Profile](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%203%20Blocking%2C%20Sleeping%20and%20FIFO%20Queue/Lab3_2_logicAnalyzer.jpg)  
 *Figure Lab3.2. Task profile measured on a solution for Lab 3 using TExaS (zoom out). Channels 0 and 3 are oscillating too fast to be observed at this time scale.*
 
-![Task Profile]()
+![Task Profile](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%203%20Blocking%2C%20Sleeping%20and%20FIFO%20Queue/Lab3_3_logicAnalyzer.jpg)  
 Figure Lab3.3. Task profile measured on a solution for Lab 3 using TExaS (zoom in).
 
 At the start of each task it also toggles an actual pin on the microcontroller. For example, Task0 calls Profile_Toggle0(). You do not need a real logic analyzer, but if you have one, it can be used.
@@ -66,7 +66,7 @@ A real-time system is one that guarantees the jitters are less than a desired th
 - Task7: no specifications
 
 ### Typical Output
-![Typical Output]()
+![Typical Output](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%203%20Blocking%2C%20Sleeping%20and%20FIFO%20Queue/Lab3Output.jpg)  
 
 If you have a real logic analyzer and are using the MSP432, open **profile.h** and change the #define for PROFILE6 from:
 
