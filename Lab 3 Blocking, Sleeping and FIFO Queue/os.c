@@ -18,7 +18,7 @@ void StartOS(void);
 struct tcb{
   int32_t *sp;       // pointer to stack (valid for threads not running
   struct tcb *next;  // linked-list pointer
-  int32_t blocked;  // nonzero if blocked on this semaphore
+  int32_t *blocked;  // nonzero if blocked on this semaphore
   int32_t sleeping; // nonzero if this thread is sleeping
 //*FILL THIS IN****
 };
@@ -143,7 +143,11 @@ void OS_Launch(uint32_t theTimeSlice){
 }
 // runs every ms
 void Scheduler(void){ // every time slice
-// ROUND ROBIN, skip blocked and sleeping threads
+	// ROUND ROBIN, skip blocked and sleeping threads
+	RunPt = RunPt->next;    // run next thread not blocked
+  while(RunPt->blocked){  // skip if blocked
+    RunPt = RunPt->next;
+  } 
 }
 
 //******** OS_Suspend ***************
@@ -173,7 +177,10 @@ void OS_Sleep(uint32_t sleepTime){
 //          initial value of semaphore
 // Outputs: none
 void OS_InitSemaphore(int32_t *semaPt, int32_t value){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
+	DisableInterrupts();
+	(*semaPt) = value;
+	EnableInterrupts();
 }
 
 // ******** OS_Wait ************
@@ -183,7 +190,15 @@ void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Wait(int32_t *semaPt){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
+	DisableInterrupts();
+	(*semaPt) = (*semaPt) -1;
+  if ((*semaPt) < 0){
+		RunPt->blocked = semaPt;	// reason it is blocked
+    EnableInterrupts(); // interrupts can occur here
+		OS_Suspend(); 
+  }
+  EnableInterrupts();
 }
 
 // ******** OS_Signal ************
@@ -193,7 +208,19 @@ void OS_Wait(int32_t *semaPt){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Signal(int32_t *semaPt){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
+	tcbType *pt;
+	DisableInterrupts();
+  (*semaPt) = (*semaPt) + 1;
+	if((*semaPt) <=0){
+		pt = RunPt->next;	// search for a trhread blocked on this semaphore
+		while(pt->blocked != semaPt){
+			pt = pt->next;
+		}
+		pt->blocked = 0;	// wakeup this one
+	}
+  EnableInterrupts();
+	
 }
 
 #define FSIZE 10    // can be any size
