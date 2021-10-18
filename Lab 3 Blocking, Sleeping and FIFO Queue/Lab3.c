@@ -469,7 +469,7 @@ void Task7(void){
 // to work on this step, you must rename all other main()
 // functions in this file.
 int32_t s1,s2;
-int main_step1(void){
+int main(void){
   OS_InitSemaphore(&s1, 0);
   OS_InitSemaphore(&s2, 1);
   while(1){
@@ -887,7 +887,7 @@ int main_step5(void){
 /* ****************************************** */
 /*          End of Step 5 Section             */
 /* ****************************************** */
-const unsigned short title2[] = {
+//const unsigned short title2[] = {
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
@@ -1191,8 +1191,8 @@ const unsigned short title2[] = {
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 // 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-
 //};
+
 //---------------- Step 6 ----------------
 // Step 6 is to implement the fitness device by combining the
 // OS functions that were implemented and tested in the earlier
@@ -1211,7 +1211,7 @@ const unsigned short title2[] = {
 // Remember that you must have exactly one main() function, so
 // to work on this step, you must rename all other main()
 // functions in this file.
-int main(void){
+int main_final(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   Task0_Init();    // microphone init
