@@ -20,13 +20,18 @@ struct tcb{
   struct tcb *next;  // linked-list pointer
   int32_t *blocked;  // nonzero if blocked on this semaphore
   int32_t sleep; 		 // nonzero if this thread is sleeping
+	void(*PeriodicTaskPt)(void);	// pointer to a periodic task
+	int32_t period;								// time between periodic task executions
 //*FILL THIS IN****
 };
+
 typedef struct tcb tcbType;
 tcbType tcbs[NUMTHREADS];
 tcbType *RunPt;
 int32_t Stacks[NUMTHREADS][STACKSIZE];
-
+tcbType periodicEvents[NUMPERIODIC];	// stores periodic events and their periods 
+int32_t periodicEventIndex;	// keeps track of the number of periodic events added
+uint32_t eventTimer[NUMPERIODIC];		// time since last event execution 
 
 // ******** OS_Init ************
 // Initialize operating system, disable interrupts
@@ -38,6 +43,7 @@ void OS_Init(void){
   DisableInterrupts();
   BSP_Clock_InitFastest();// set processor clock to fastest speed
   // perform any initializations needed
+	periodicEventIndex = 0;
 }
 
 void SetInitialStack(int i){
@@ -117,6 +123,11 @@ int OS_AddThreads(void(*thread0)(void),
 // In Lab 3 this will be called exactly twice
 int OS_AddPeriodicEventThread(void(*thread)(void), uint32_t period){
 // ****IMPLEMENT THIS****
+	if(periodicEventIndex < NUMPERIODIC){
+		periodicEvents[periodicEventIndex].PeriodicTaskPt = thread;
+		periodicEvents[periodicEventIndex].period = period;
+		periodicEventIndex++;
+	}
 	
   return 1;
 
@@ -126,9 +137,18 @@ void static runperiodicevents(void){
 // ****IMPLEMENT THIS****
 // **RUN PERIODIC THREADS, DECREMENT SLEEP COUNTERS
 	uint32_t i;
+	
+	for(i=0; i<(NUMPERIODIC); i++){
+		eventTimer[i]++;																// increment event timer
+		if(eventTimer[i] == periodicEvents[i].period){	// has an event period passed?
+			periodicEvents[i].PeriodicTaskPt();						// execute periodic event
+			eventTimer[i] = 0;														// reset event timer
+		}
+	}
+	
 	for(i=0;i<(NUMTHREADS);i++){
 		if(tcbs[i].sleep){
-			tcbs[i].sleep--;
+			tcbs[i].sleep--;	// decrement sleep counters
 		}
 	}
 
