@@ -13,7 +13,7 @@ Lab 4 uses the LaunchPad and the Educational BoosterPack MKII (BOOSTXL-EDUMKII).
 
 Just like Labs 2 and 3, the starter project will not execute until you implement the necessary RTOS functions. We encourage you to reuse code from Lab 3. Identical to Lab 3, the user code inputs from the microphone, accelerometer, light sensor, temperature sensor and switches. It performs some simple measurements and calculations of steps, sound intensity, light intensity, and temperature. It outputs data to the LCD and it generates simple beeping sounds. Figure Lab4.1 shows the data flow graph of Lab 4. Your RTOS will run eight main threads. Tasks 0, 1, 3 are event threads. The periodic interrupt will signal semaphores for Task0 and Task1. An edge triggered interrupt will signal a semaphore for Task 3.
 
-![Data flow graph of Lab 4]()
+![Data flow graph of Lab 4](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%204%20Priority%20Scheduler/Lab3.1dataFlow.jpg)
 
 Figure Lab4.1. Data flow graph of Lab 4 (same as Lab 3).
 
