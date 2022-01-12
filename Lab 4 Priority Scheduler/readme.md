@@ -1,4 +1,4 @@
-
+# Lab 4: Priority Scheduler
 
 The objectives of Lab 4 are to
 
@@ -6,21 +6,6 @@ The objectives of Lab 4 are to
     Add edge triggered interrupts to signal semaphores
     Signal semaphores from periodic interrupts
     Run event tasks using the regular scheduler
-
-Lab 4
-0:00 / 0:00
-
-Press UP to enter the speed menu then use the UP and DOWN arrow keys to navigate the different speeds, then press ENTER to change to the selected speed.
-
-Click on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level.
-Maximum Volume.
-Downloads and transcripts
-Video
-Download video file
-Transcripts
-
-    Download SubRip (.srt) file
-    Download Text (.txt) file
 
 Lab 4 is an incremental improvement over Lab 3. In particular, you will add priority to the TCB. If all threads have equal priority, then the system runs as round robin. There will be two types of interrupts: periodic and edge-triggered. On the occurrence of the interrupt, the OS will simply signal one or more semaphores, and then run the scheduler. All threads, including event threads and main threads, are run by the scheduler. Event threads will be assigned high priority to assure low jitter and low latency.
 
@@ -43,7 +28,7 @@ This simple fitness device has eight tasks: eight main threads. Since you have t
 
 Thread 7, which doesn’t do any useful task, will never sleep or block. Just like Lab 3, this thread will make your RTOS easier to implement because you do not need to handle the case where all main threads are sleeping or blocked.
 
-Your RTOS manages these eight tasks. We will use the same metrics as described as used in Lab 3:
+Your RTOS manages these eight tasks. We will use the same metrics as described as used in Lab 3:  
 
        Minj = minimum ΔTj for Task j, j=0 to 5
        Maxj = maximum ΔTj for Task j, j=0 to 5
@@ -51,21 +36,7 @@ Your RTOS manages these eight tasks. We will use the same metrics as described a
        Avej = Average ΔTj for Task j, j=0, 1, 3, 4, 5, and 6 (not 2 and 7)
        Errj = 100*( Avej - Δtj)/Δtj for Task j, j=0 to 1
 
-In addition to the above quantitative measures, you will be able to visualize the execution profile of the system using a logic analyzer. Tasks 0 to 6 toggle both the virtual logic analyzer and a real logic analyzer when they start. For example, Task0 calls TExaS_Task0(). The first parameter to the function TExaS_Init() will be GRADER or LOGICANALYZER. Just like Labs 1-3, calling TExaS_Task0() in grader mode performs the lab grading. However, in logic analyzer mode, these calls implement the virtual logic analyzer and can be viewed with TExaSdisplay. At the start of each task it also toggles an actual pin on the microcontroller. For example, Task0 calls Profile_Toggle0(). You do not need a real logic analyzer, but if you have one, it can be used.
-Lab 4 Logic Analyzer
-0:00 / 0:00
-
-Press UP to enter the speed menu then use the UP and DOWN arrow keys to navigate the different speeds, then press ENTER to change to the selected speed.
-
-Click on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level.
-Maximum Volume.
-Downloads and transcripts
-Video
-Download video file
-Transcripts
-
-    Download SubRip (.srt) file
-    Download Text (.txt) file
+In addition to the above quantitative measures, you will be able to visualize the execution profile of the system using a logic analyzer. Tasks 0 to 6 toggle both the virtual logic analyzer and a real logic analyzer when they start. For example, Task0 calls TExaS_Task0(). The first parameter to the function TExaS_Init() will be GRADER or LOGICANALYZER. Just like Labs 1-3, calling TExaS_Task0() in grader mode performs the lab grading. However, in logic analyzer mode, these calls implement the virtual logic analyzer and can be viewed with TExaSdisplay. At the start of each task it also toggles an actual pin on the microcontroller. For example, Task0 calls Profile_Toggle0(). You do not need a real logic analyzer, but if you have one, it can be used.  
 
 A real-time system is one that guarantees the jitters are less than a desired threshold, and the averages are close to desired values. We expect the jitter for the two periodic tasks to be quite low. Your assignment is implement the OS functions in OS.c and write the SysTick interrupt service routine in osasm.s. We do not expect you to edit the user code in Lab4.c, the board support package in BSP.c, or the interface specifications in profile.h, Texas.h, BSP.h, or OS.h. More specifically, we are asking you to develop and debug a real-time operating system, such that
 
