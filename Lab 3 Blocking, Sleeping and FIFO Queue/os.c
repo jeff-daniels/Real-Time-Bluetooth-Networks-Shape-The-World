@@ -126,6 +126,7 @@ int OS_AddPeriodicEventThread(void(*thread)(void), uint32_t period){
 	if(periodicEventIndex < NUMPERIODIC){
 		periodicEvents[periodicEventIndex].PeriodicTaskPt = thread;
 		periodicEvents[periodicEventIndex].period = period;
+		eventTimer[periodicEventIndex] = 0;
 		periodicEventIndex++;
 	}
 	
