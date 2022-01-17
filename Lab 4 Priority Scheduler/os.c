@@ -88,7 +88,50 @@ int OS_AddThreads(void(*thread0)(void), uint32_t p0,
                   void(*thread6)(void), uint32_t p6,
                   void(*thread7)(void), uint32_t p7){
 // **similar to Lab 3. initialize priority field****
- 
+	int32_t status;
+  status = StartCritical();
+  tcbs[0].next = &tcbs[1]; // 0 points to 1
+  tcbs[1].next = &tcbs[2]; // 1 points to 2
+	tcbs[2].next = &tcbs[3]; // 2 points to 3
+  tcbs[3].next = &tcbs[4]; // 3 points to 4
+	tcbs[4].next = &tcbs[5]; // 4 points to 5
+	tcbs[5].next = &tcbs[6]; // 5 points to 6
+	tcbs[6].next = &tcbs[7]; // 6 points to 7
+	tcbs[7].next = &tcbs[0]; // 7 points to 0
+	tcbs[0].blocked = 0;		// not blocked
+	tcbs[1].blocked = 0;		// not blocked
+	tcbs[2].blocked = 0;		// not blocked
+	tcbs[3].blocked = 0;		// not blocked
+	tcbs[4].blocked = 0;		// not blocked
+	tcbs[5].blocked = 0;		// not blocked
+	tcbs[6].blocked = 0;		// not blocked
+	tcbs[7].blocked = 0;		// not blocked
+	tcbs[0].sleep = 0;			// not sleeping
+	tcbs[1].sleep = 0;			// not sleeping
+	tcbs[2].sleep = 0;			// not sleeping
+	tcbs[3].sleep = 0;			// not sleeping
+	tcbs[4].sleep = 0;			// not sleeping
+	tcbs[5].sleep = 0;			// not sleeping
+	tcbs[6].sleep = 0;			// not sleeping
+  tcbs[7].sleep = 0;			// not sleeping
+	SetInitialStack(0); Stacks[0][STACKSIZE-2] = (int32_t)(thread0); // PC
+  SetInitialStack(1); Stacks[1][STACKSIZE-2] = (int32_t)(thread1); // PC
+  SetInitialStack(2); Stacks[2][STACKSIZE-2] = (int32_t)(thread2); // PC
+	SetInitialStack(3); Stacks[3][STACKSIZE-2] = (int32_t)(thread3); // PC
+  SetInitialStack(4); Stacks[4][STACKSIZE-2] = (int32_t)(thread4); // PC
+	SetInitialStack(5); Stacks[5][STACKSIZE-2] = (int32_t)(thread5); // PC										
+	SetInitialStack(6); Stacks[6][STACKSIZE-2] = (int32_t)(thread6); // PC										
+	SetInitialStack(7); Stacks[7][STACKSIZE-2] = (int32_t)(thread7); // PC										
+	tcbs[0].Priority = p0;	// set priority
+	tcbs[1].Priority = p1;	// set priority
+	tcbs[2].Priority = p2;	// set priority
+	tcbs[3].Priority = p3;	// set priority
+	tcbs[4].Priority = p4;	// set priority
+	tcbs[5].Priority = p5;	// set priority
+	tcbs[6].Priority = p6;	// set priority
+	tcbs[7].Priority = p7;	// set priority
+	RunPt = &tcbs[0];       // thread 0 will run first
+  EndCritical(status);						
   return 1;               // successful
 }
 
