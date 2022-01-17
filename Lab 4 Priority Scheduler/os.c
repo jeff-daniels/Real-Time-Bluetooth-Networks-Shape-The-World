@@ -140,7 +140,12 @@ void static runperiodicevents(void){
 // ****IMPLEMENT THIS****
 // **DECREMENT SLEEP COUNTERS
 // In Lab 4, handle periodic events in RealTimeEvents
-  
+		uint32_t i;
+  	for(i=0;i<(NUMTHREADS);i++){
+			if(tcbs[i].sleep){
+				tcbs[i].sleep--;	// decrement sleep counters
+		}
+	}
 }
 
 //******** OS_Launch ***************
@@ -162,7 +167,18 @@ void Scheduler(void){      // every time slice
 // look at all threads in TCB list choose
 // highest priority thread not blocked and not sleeping 
 // If there are multiple highest priority (not blocked, not sleeping) run these round robin
-
+  uint32_t max = 255; // max
+  tcbType *pt;
+  tcbType *bestPt;
+  pt = RunPt;         // search for highest thread not blocked or sleeping
+  do{
+    pt = pt->next;    // skips at least one
+    if((pt->Priority < max)&&((pt->blocked)==0)&&((pt->sleep)==0)){
+      max = pt->Priority;
+      bestPt = pt;
+    }
+  } while(RunPt != pt); // look at all possible threads
+  RunPt = bestPt; 
 }
 
 //******** OS_Suspend ***************
@@ -185,7 +201,8 @@ void OS_Sleep(uint32_t sleepTime){
 // ****IMPLEMENT THIS****
 // set sleep parameter in TCB, same as Lab 3
 // suspend, stops running
-
+	RunPt->sleep = sleepTime;
+	OS_Suspend();
 }
 
 // ******** OS_InitSemaphore ************
@@ -196,7 +213,9 @@ void OS_Sleep(uint32_t sleepTime){
 void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 // ****IMPLEMENT THIS****
 // Same as Lab 3
- 
+ 	DisableInterrupts();
+	(*semaPt) = value;
+	EnableInterrupts();
 }
 
 // ******** OS_Wait ************
@@ -208,7 +227,14 @@ void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 void OS_Wait(int32_t *semaPt){
 // ****IMPLEMENT THIS****
 // Same as Lab 3
-  
+  DisableInterrupts();
+	(*semaPt) = (*semaPt) -1;
+  if ((*semaPt) < 0){
+		RunPt->blocked = semaPt;	// reason it is blocked
+    EnableInterrupts(); // interrupts can occur here
+		OS_Suspend(); 
+  }
+  EnableInterrupts();
 }
 
 // ******** OS_Signal ************
@@ -220,7 +246,17 @@ void OS_Wait(int32_t *semaPt){
 void OS_Signal(int32_t *semaPt){
 // ****IMPLEMENT THIS****
 // Same as Lab 3
-  
+  tcbType *pt;
+	DisableInterrupts();
+  (*semaPt) = (*semaPt) + 1;
+	if((*semaPt) <=0){
+		pt = RunPt->next;	// search for a thread blocked on this semaphore
+		while(pt->blocked != semaPt){
+			pt = pt->next;
+		}
+		pt->blocked = 0;	// wakeup this one
+	}
+  EnableInterrupts();
 }
 
 #define FSIZE 10    // can be any size
@@ -242,7 +278,9 @@ uint32_t LostData;  // number of lost pieces of data
 void OS_FIFO_Init(void){
 // ****IMPLEMENT THIS****
 // Same as Lab 3
-  
+  PutI = GetI = 0;		// Empty
+	OS_InitSemaphore(&CurrentSize, 0);
+	LostData = 0;
 }
 
 // ******** OS_FIFO_Put ************
@@ -255,6 +293,14 @@ void OS_FIFO_Init(void){
 int OS_FIFO_Put(uint32_t data){
 // ****IMPLEMENT THIS****
 // Same as Lab 3
+	if(CurrentSize==FSIZE){
+		LostData++;
+		return -1;					// full		
+	}	else{
+		Fifo[PutI] = data;	// Put
+		PutI = (PutI+1)%FSIZE;
+		OS_Signal(&CurrentSize);
+	}
 	
  return 0; // success
 }
@@ -269,7 +315,10 @@ int OS_FIFO_Put(uint32_t data){
 uint32_t OS_FIFO_Get(void){uint32_t data;
 // ****IMPLEMENT THIS****
 // Same as Lab 3
- return data;
+	OS_Wait(&CurrentSize);		// block if empty
+	data = Fifo[GetI];				// get
+	GetI = (GetI+1)%FSIZE;		// place to get next
+	return data;
 }
 // *****periodic events****************
 int32_t *PeriodicSemaphore0;
