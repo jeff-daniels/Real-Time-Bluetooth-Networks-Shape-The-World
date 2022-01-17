@@ -159,7 +159,8 @@ void OS_Launch(uint32_t theTimeSlice){
   SYSPRI3 =(SYSPRI3&0x00FFFFFF)|0xE0000000; // priority 7
   STRELOAD = theTimeSlice - 1; // reload value
   STCTRL = 0x00000007;         // enable, core clock and interrupt arm
-  StartOS();                   // start on the first task
+  BSP_PeriodicTask_Init(&runperiodicevents,1000,1);	// runs every ms with a priority of 0-6
+	StartOS();                   // start on the first task
 }
 // runs every ms
 void Scheduler(void){      // every time slice
