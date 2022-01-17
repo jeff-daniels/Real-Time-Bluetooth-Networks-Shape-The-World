@@ -21,6 +21,11 @@ struct tcb{
   int32_t *sp;       // pointer to stack (valid for threads not running
   struct tcb *next;  // linked-list pointer
 //*FILL THIS IN****
+	int32_t *blocked;  // nonzero if blocked on this semaphore
+  int32_t sleep; 		 // nonzero if this thread is sleeping
+	void(*PeriodicTaskPt)(void);	// pointer to a periodic task
+	int32_t period;		// time between periodic task executions
+	uint8_t Priority;  // 0 is highest, 254 lowest
 };
 typedef struct tcb tcbType;
 tcbType tcbs[NUMTHREADS];
