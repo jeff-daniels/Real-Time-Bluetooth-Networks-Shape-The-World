@@ -31,6 +31,11 @@ typedef struct tcb tcbType;
 tcbType tcbs[NUMTHREADS];
 tcbType *RunPt;
 int32_t Stacks[NUMTHREADS][STACKSIZE];
+tcbType periodicEvents[NUMPERIODIC];	// stores periodic events and their periods 
+int32_t periodicEventIndex;	// keeps track of the number of periodic events added
+uint32_t eventTimer[NUMPERIODIC];		// time since last event execution
+
+
 void static runperiodicevents(void);
 
 // ******** OS_Init ************
@@ -50,7 +55,22 @@ void OS_Init(void){
 void SetInitialStack(int i){
   // ****IMPLEMENT THIS**** 
   // **Same as Lab 2 and Lab 3****
- 
+ 	tcbs[i].sp = &Stacks[i][STACKSIZE-16]; // thread stack pointer
+  Stacks[i][STACKSIZE-1] = 0x01000000;   // thumb bit
+  Stacks[i][STACKSIZE-3] = 0x14141414;   // R14
+  Stacks[i][STACKSIZE-4] = 0x12121212;   // R12
+  Stacks[i][STACKSIZE-5] = 0x03030303;   // R3
+  Stacks[i][STACKSIZE-6] = 0x02020202;   // R2
+  Stacks[i][STACKSIZE-7] = 0x01010101;   // R1
+  Stacks[i][STACKSIZE-8] = 0x00000000;   // R0
+  Stacks[i][STACKSIZE-9] = 0x11111111;   // R11
+  Stacks[i][STACKSIZE-10] = 0x10101010;  // R10
+  Stacks[i][STACKSIZE-11] = 0x09090909;  // R9
+  Stacks[i][STACKSIZE-12] = 0x08080808;  // R8
+  Stacks[i][STACKSIZE-13] = 0x07070707;  // R7
+  Stacks[i][STACKSIZE-14] = 0x06060606;  // R6
+  Stacks[i][STACKSIZE-15] = 0x05050505;  // R5
+  Stacks[i][STACKSIZE-16] = 0x04040404;  // R4
 }
 
 //******** OS_AddThreads ***************
