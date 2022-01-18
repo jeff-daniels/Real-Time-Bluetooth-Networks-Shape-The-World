@@ -595,7 +595,7 @@ void TaskH(void){ // dummy
     CountH++;
   }
 }
-int main(void){
+int main_step1(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   OS_InitSemaphore(&sAB, 0);
@@ -759,7 +759,7 @@ void TaskR(void){ // consumer
 		OS_EdgeTrigger_Restart();
   }
 }
-int main_step3(void){
+int main(void){
   OS_Init();
   Profile_Init();  // initialize the 7 hardware profiling pins
   OS_InitSemaphore(&sI, 0);
@@ -773,8 +773,8 @@ int main_step3(void){
 	OS_EdgeTrigger_Init(&sQ,2);
   OS_AddThreads(&TaskI,0, &TaskJ,1, &TaskK,2, &TaskL,3,
    	&TaskQ,4, &TaskR,5, &TaskO,6, &TaskP,7);
-  TExaS_Init(LOGICANALYZER, 1000); // initialize the Lab 4 grader
-//  TExaS_Init(GRADESTEP3, 1000);    // initialize the Lab 4 grader
+//  TExaS_Init(LOGICANALYZER, 1000); // initialize the Lab 4 grader
+  TExaS_Init(GRADESTEP3, 1000);    // initialize the Lab 4 grader
   OS_Launch(BSP_Clock_GetFreq()/1000);
   return 0;             // this never executes
 }
