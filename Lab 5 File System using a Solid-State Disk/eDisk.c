@@ -106,19 +106,23 @@ enum DRESULT eDisk_WriteSector(
 // you can use Flash_FastWrite or Flash_WriteArray
 // **write this function**
 	uint32_t start = (EDISK_ADDR_MIN + 512*sector);	// starting address
-	uint8_t *addressPtr = (uint8_t *)(start);
-	uint16_t i;
-	for(i=0; i<512; i++){
-		if (addressPtr > (uint8_t *)(EDISK_ADDR_MAX)){
+	uint16_t successfulWrites;
+
+		if (start > EDISK_ADDR_MAX){
 			return RES_PARERR;
 		}			
 		else {
-				Flash_Write((uint32_t)addressPtr, *(uint32_t *)buff);
-				addressPtr++;
-				buff++;
+			successfulWrites = Flash_WriteArray((uint32_t *)buff, start, 512/4);
+			if (successfulWrites == 512/4){
+				return RES_OK;
 			}
-	}
-	return RES_OK;
+			else{
+				return RES_ERROR;
+			}
+
+			}
+
+	
 }
 
 
