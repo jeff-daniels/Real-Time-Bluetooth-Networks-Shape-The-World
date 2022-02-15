@@ -105,10 +105,22 @@ enum DRESULT eDisk_WriteSector(
 // write 512 bytes from RAM (buff) into ROM (disk)
 // you can use Flash_FastWrite or Flash_WriteArray
 // **write this function**
-  
-			
-  return RES_OK;
+	uint32_t start = (EDISK_ADDR_MIN + 512*sector);	// starting address
+	uint8_t *addressPtr = (uint8_t *)(start);
+	uint16_t i;
+	for(i=0; i<512; i++){
+		if (addressPtr > (uint8_t *)(EDISK_ADDR_MAX)){
+			return RES_PARERR;
+		}			
+		else {
+				Flash_Write((uint32_t)addressPtr, *(uint32_t *)buff);
+				addressPtr++;
+				buff++;
+			}
+	}
+	return RES_OK;
 }
+
 
 //*************** eDisk_Format ***********
 // Erase all files and all data by resetting the flash to all 1's
