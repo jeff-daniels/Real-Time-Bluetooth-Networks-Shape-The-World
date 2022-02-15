@@ -112,6 +112,7 @@ enum DRESULT eDisk_WriteSector(
 			return RES_PARERR;
 		}			
 		else {
+			// Flash_WriteArray writes 32 bits or 4 bytes at a time so counts = 512/4
 			successfulWrites = Flash_WriteArray((uint32_t *)buff, start, 512/4);
 			if (successfulWrites == 512/4){
 				return RES_OK;
@@ -138,8 +139,14 @@ enum DRESULT eDisk_WriteSector(
 enum DRESULT eDisk_Format(void){
 // erase all flash from EDISK_ADDR_MIN to EDISK_ADDR_MAX
 // **write this function**
-  
-	
-	
+  uint32_t address = EDISK_ADDR_MIN;
+	while(address < EDISK_ADDR_MAX){
+		if(Flash_Erase(address) == NOERROR){
+			address += 1024;	// Flash_Erase erases 1 KB block of flash at a time
+		}
+		else{
+			return RES_ERROR;
+		}
+	}	
   return RES_OK;
 }
