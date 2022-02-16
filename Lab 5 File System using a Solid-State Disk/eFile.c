@@ -52,13 +52,12 @@ uint8_t lastsector(uint8_t start){
 		return 255;
 	}
 	else{
-		uint16_t m = FAT[start];
+		uint8_t m = FAT[start];
 		while (m !=255){	// traverse through the linked pointers
 			start = m;
 		}
 		return start; // start is now the last sector of the file
 	}
-  
 }
 
 // Return the index of the first free sector.
@@ -67,8 +66,15 @@ uint8_t lastsector(uint8_t start){
 // (i.e. the FAT is corrupted).
 uint8_t findfreesector(void){
 // **write this function**
-  
-  return 0; // replace this line
+  uint8_t fs = -1;
+	uint8_t i = 0;
+	uint8_t ls = lastsector(Directory[i]);
+	while(ls !=255){
+		fs = max(fs, ls);
+		i++;
+		ls = lastsector(Directory[i]);
+	}
+  return fs+1; // replace this line
 }
 
 // Append a sector index 'n' at the end of file 'num'.
