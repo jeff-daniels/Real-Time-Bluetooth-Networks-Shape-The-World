@@ -129,9 +129,17 @@ uint8_t OS_File_New(void){
 // Errors:  none
 uint8_t OS_File_Size(uint8_t num){
 // **write this function**
-  
+    uint8_t start = Directory[num];
+	uint8_t size = 1;
+	if (start == 255){
+		return 0;	// file does not exist, size is zero
+	}
+	while(FAT[start] !=255){
+		size++;
+		start = FAT[start];	// traverse the linked pointers
+	}
+  return size; // number of sectors
 	
-  return 0; // replace this line
 }
 
 //********OS_File_Append*************
@@ -142,8 +150,18 @@ uint8_t OS_File_Size(uint8_t num){
 // Errors:  255 on failure or disk full
 uint8_t OS_File_Append(uint8_t num, uint8_t buf[512]){
 // **write this function**
-  
-  return 0; // replace this line
+  MountDirectory(); // bring DIR and FAT from ROM to RAM if needed
+	uint8_t n = findfreesector();
+	if (n == 255){
+		return 255; // disk is full
+	}
+	else{
+		if(eDisk_WriteSector(buf, n)!=RES_OK){ // write the sector
+			return 255;	// R/W error
+		}
+		appendfat(num, n);
+	}
+	return 0;
 }
 
 //********OS_File_Read*************
@@ -156,8 +174,18 @@ uint8_t OS_File_Append(uint8_t num, uint8_t buf[512]){
 uint8_t OS_File_Read(uint8_t num, uint8_t location,
                      uint8_t buf[512]){
 // **write this function**
-  
-  return 0; // replace this line
+	uint8_t sector = Directory[num];
+	uint8_t i;
+	if (sector == 255){
+		return 255;	// file does not exist
+	}
+	for (i=0; i<location; i++){
+		sector = FAT[sector];
+		if (sector == 255){
+			return 255;
+		}
+	}
+	return eDisk_ReadSector(buf, sector);
 }
 
 //********OS_File_Flush*************
@@ -168,8 +196,17 @@ uint8_t OS_File_Read(uint8_t num, uint8_t location,
 // Errors:  255 on disk write failure
 uint8_t OS_File_Flush(void){
 // **write this function**
-
-  return 0; // replace this line
+	uint16_t i;
+	for (i=0; i<256; i++){	// Copy Directory and Fat to 512 byte buffer
+		Buff[i] = Directory[i];
+		Buff[i+256] = FAT[i];
+	}
+	if (eDisk_WriteSector(Buff, 255) == RES_OK){
+		return 0;
+	}
+	else{
+		return 255;
+	}
 }
 
 //********OS_File_Format*************
@@ -181,6 +218,11 @@ uint8_t OS_File_Format(void){
 // call eDiskFormat
 // clear bDirectoryLoaded to zero
 // **write this function**
-
-  return 0; // replace this line
+	if (eDisk_Format() == RES_OK){
+		bDirectoryLoaded = 0;	// disk on ROM is complete
+		return 0;	// success
+	}
+	else{
+		return 255;	// disk write failure
+	}
 }
