@@ -74,7 +74,7 @@ uint8_t findfreesector(void){
 		i++;
 		ls = lastsector(Directory[i]);
 	}
-  return fs+1; // replace this line
+  return fs+1; // this is the free sector
 }
 
 // Append a sector index 'n' at the end of file 'num'.
@@ -85,9 +85,20 @@ uint8_t findfreesector(void){
 // if the file has no end (i.e. the FAT is corrupted).
 uint8_t appendfat(uint8_t num, uint8_t n){
 // **write this function**
-  
-	
-  return 0; // replace this line
+  uint8_t	i = Directory[num];	// first sector location
+	if (i==255){	// file was just created
+		Directory[num]=n;
+		return 0;
+	}
+	else{
+		uint8_t m = FAT[i];
+		while (m != 255){
+			i = m;
+			m = FAT[i];
+		}
+		FAT[i]=n;
+		return 0;
+	}
 }
 
 //********OS_File_New*************
@@ -97,7 +108,16 @@ uint8_t appendfat(uint8_t num, uint8_t n){
 // Errors: return 255 on failure or disk full
 uint8_t OS_File_New(void){
 // **write this function**
-  
+  uint8_t i = 0;
+	MountDirectory();
+	while(Directory[i] !=255)
+	{
+		i++;
+		if (i == 255){
+			return 255;
+		}
+		return i;
+	}
 	
   return 255;
 }
