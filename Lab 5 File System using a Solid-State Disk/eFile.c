@@ -28,9 +28,9 @@ void MountDirectory(void){
 // **write this function**
 	if (bDirectoryLoaded == 0){	// directory not loaded
 		eDisk_ReadSector(&Buff[0],255);	// read disk sector 255
-		for (uint16_t i=0;i<256; i++){	// populate Directory and FAT
+		for (int i=0;i<256; i++){	// populate Directory and FAT
 			Directory[i] = Buff[i];
-			FAT[i+256] = Buff[i+256];
+			FAT[i] = Buff[i+256];
 		}
 		bDirectoryLoaded = 1;
 		return;
@@ -51,13 +51,13 @@ uint8_t lastsector(uint8_t start){
   if (start == 255){	// the FAT is empty
 		return 255;
 	}
-	else{
-		uint8_t m = FAT[start];
-		while (m !=255){	// traverse through the linked pointers
-			start = m;
-		}
-		return start; // start is now the last sector of the file
+	uint8_t m = FAT[start];
+	while (m !=255){	// traverse through the linked pointers
+		start = m;
+		m = FAT[start];
 	}
+	return start; // start is now the last sector of the file
+
 }
 
 // Return the index of the first free sector.
@@ -66,15 +66,15 @@ uint8_t lastsector(uint8_t start){
 // (i.e. the FAT is corrupted).
 uint8_t findfreesector(void){
 // **write this function**
-  uint8_t fs = -1;
+  int16_t fs = -1;
 	uint8_t i = 0;
-	uint8_t ls = lastsector(Directory[i]);
+	int16_t ls = (int16_t)lastsector(Directory[i]);
 	while(ls !=255){
 		fs = max(fs, ls);
 		i++;
 		ls = lastsector(Directory[i]);
 	}
-  return fs+1; // this is the free sector
+  return (fs+1); // this is the free sector
 }
 
 // Append a sector index 'n' at the end of file 'num'.
@@ -85,20 +85,20 @@ uint8_t findfreesector(void){
 // if the file has no end (i.e. the FAT is corrupted).
 uint8_t appendfat(uint8_t num, uint8_t n){
 // **write this function**
-  uint8_t	i = Directory[num];	// first sector location
+  uint16_t	i = Directory[num];	// first sector location
+	uint16_t m = 0;
 	if (i==255){	// file was just created
 		Directory[num]=n;
-		return 0;
 	}
 	else{
-		uint8_t m = FAT[i];
+		m = FAT[i];
 		while (m != 255){
 			i = m;
 			m = FAT[i];
 		}
 		FAT[i]=n;
-		return 0;
 	}
+	return 0;
 }
 
 //********OS_File_New*************
@@ -110,16 +110,17 @@ uint8_t OS_File_New(void){
 // **write this function**
   uint8_t i = 0;
 	MountDirectory();
-	while(Directory[i] !=255)
-	{
-		i++;
-		if (i == 255){
-			return 255;
-		}
+	if (Directory[i]==255){ // No files written yet
 		return i;
 	}
-	
-  return 255;
+	while(i != 255)
+	{
+		i++;
+		if (Directory[i]==255){	// look for next open directory slot
+			return i;
+		}
+	}	
+  return 255;	// Disk has 255 files one sector in size
 }
 
 //********OS_File_Size*************
@@ -156,9 +157,7 @@ uint8_t OS_File_Append(uint8_t num, uint8_t buf[512]){
 		return 255; // disk is full
 	}
 	else{
-		if(eDisk_WriteSector(buf, n)!=RES_OK){ // write the sector
-			return 255;	// R/W error
-		}
+		eDisk_WriteSector(buf, n);	// write the sector
 		appendfat(num, n);
 	}
 	return 0;
