@@ -8,3 +8,21 @@ A scheduler was developed that runs two periodic event threads and four main thr
 The semaphores were reworked from spinlock to blocking.  Periodic event tasks were implemented with dedicated timer interrupts.  A FIFO queue was developed to implement data flow from producer to consumer.  A sleeping mechanism was developed to recover wasted time.  The round-robin scheduler is capable of implementing blocking and sleeping.  
 ## [Lab 4: Priority Scheduler](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%204%20Priority%20Scheduler/Lab4.c)  
 Priority was added to the thread control block.  In addition to the periodic interrupts, edge-triggered interrupts are used.  On the occurrence of an interrupt, the operating system signals one or more semaphores and then runs the scheduler.  Assigning high priority to event threads reduces latency and jitter.  
+## [Lab 5: File System using Solid-State Disk](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%205%20File%20System%20using%20a%20Solid-State%20Disk/Lab5.c)  
+A simple file system was created with the following usage restrictions/specifications:  
+- The 128k flash memory is erased only once at the time of downloading the project; 
+- The act of erasing the entire flash is equivalent to "formatting" the disk; 
+- The disk is partitioned into 256 sectors of 512 bytes/sector; 
+- We can append data to a file but cannot delete data or files; 
+- We append data to a file in chunks of 512 bytes; 
+- We will read data in a sequential fashion; 
+- We assign file names as single 8-bit numbers (0 to 254); 
+- We limit the file system to a maximum of 255 files; 
+- We will mount (initialize the driver) the file system on startup; 
+- We will call flush (backup to disk) the file system before powering down.  
+
+This was done on four layers of abstraction:  
+1. Physical layer with actions performed by the FlashProgram module.
+2. Disk layer which is implemented by the eDisk module.  
+3. File system layer implemented with the eFile module.  
+4. Uppermost layer containing the main function.  
