@@ -26,7 +26,18 @@ void MountDirectory(void){
 //    set bDirectoryLoaded=1
 // if bDirectoryLoaded is 1, simply return
 // **write this function**
-
+	if (bDirectoryLoaded == 0){	// directory not loaded
+		eDisk_ReadSector(&Buff[0],255);	// read disk sector 255
+		for (uint16_t i=0;i<256; i++){	// populate Directory and FAT
+			Directory[i] = Buff[i];
+			FAT[i+256] = Buff[i+256];
+		}
+		bDirectoryLoaded = 1;
+		return;
+	}
+	if (bDirectoryLoaded == 1){
+		return;
+	}
   
 	
 }
