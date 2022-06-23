@@ -26,3 +26,6 @@ This was done on four layers of abstraction:
 2. Disk layer which is implemented by the eDisk module.  
 3. File system layer implemented with the eFile module.  
 4. Uppermost layer containing the main function.  
+
+## [Lab 6: Bluetooth BLE]()  
+Bluetooth stuff  
