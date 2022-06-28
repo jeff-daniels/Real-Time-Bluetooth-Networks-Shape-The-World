@@ -24,6 +24,7 @@ struct tcb{
 	int32_t period;								// time between periodic task executions
 //*FILL THIS IN****
 };
+
 typedef struct tcb tcbType;
 tcbType tcbs[NUMTHREADS];
 tcbType *RunPt;
@@ -42,7 +43,7 @@ void OS_Init(void){
   DisableInterrupts();
   BSP_Clock_InitFastest();// set processor clock to fastest speed
   // perform any initializations needed
-		periodicEventIndex = 0;
+	periodicEventIndex = 0;
 }
 
 void SetInitialStack(int i){
@@ -150,6 +151,7 @@ void static runperiodicevents(void){
 			tcbs[i].sleep--;	// decrement sleep counters
 		}
 	}
+
 }
 
 //******** OS_Launch ***************
@@ -163,15 +165,16 @@ void OS_Launch(uint32_t theTimeSlice){
   SYSPRI3 =(SYSPRI3&0x00FFFFFF)|0xE0000000; // priority 7
   STRELOAD = theTimeSlice - 1; // reload value
   STCTRL = 0x00000007;         // enable, core clock and interrupt arm
+	BSP_PeriodicTask_Init(&runperiodicevents,1000,1);	// runs every ms with a priority of 0-6
   StartOS();                   // start on the first task
 }
-// runs every ms
+
 void Scheduler(void){ // every time slice
-// ROUND ROBIN, skip blocked and sleeping threads
+	// ROUND ROBIN, skip blocked and sleeping threads
 	RunPt = RunPt->next;    // run next thread not blocked
   while((RunPt->sleep)||(RunPt->blocked)){  // skip if blocked or sleeping
-    RunPt = RunPt->next;	
-	}
+    RunPt = RunPt->next;
+  } 
 }
 
 //******** OS_Suspend ***************
@@ -194,7 +197,7 @@ void OS_Sleep(uint32_t sleepTime){
 // set sleep parameter in TCB
 // suspend, stops running
 	RunPt->sleep = sleepTime;
-	OS_Suspend();	
+	OS_Suspend();
 }
 
 // ******** OS_InitSemaphore ************
@@ -203,7 +206,7 @@ void OS_Sleep(uint32_t sleepTime){
 //          initial value of semaphore
 // Outputs: none
 void OS_InitSemaphore(int32_t *semaPt, int32_t value){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	DisableInterrupts();
 	(*semaPt) = value;
 	EnableInterrupts();
@@ -216,7 +219,7 @@ void OS_InitSemaphore(int32_t *semaPt, int32_t value){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Wait(int32_t *semaPt){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	DisableInterrupts();
 	(*semaPt) = (*semaPt) -1;
   if ((*semaPt) < 0){
@@ -234,7 +237,7 @@ void OS_Wait(int32_t *semaPt){
 // Inputs:  pointer to a counting semaphore
 // Outputs: none
 void OS_Signal(int32_t *semaPt){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	tcbType *pt;
 	DisableInterrupts();
   (*semaPt) = (*semaPt) + 1;
@@ -245,7 +248,7 @@ void OS_Signal(int32_t *semaPt){
 		}
 		pt->blocked = 0;	// wakeup this one
 	}
-  EnableInterrupts();	
+  EnableInterrupts();
 	
 }
 
@@ -262,10 +265,10 @@ uint32_t LostData;  // number of lost pieces of data
 // Inputs:  none
 // Outputs: none
 void OS_FIFO_Init(void){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	PutI = GetI = 0;		// Empty
 	OS_InitSemaphore(&CurrentSize, 0);
-	LostData = 0;	
+	LostData = 0;
 }
 
 // ******** OS_FIFO_Put ************
@@ -275,7 +278,7 @@ void OS_FIFO_Init(void){
 // Inputs:  data to be stored
 // Outputs: 0 if successful, -1 if the FIFO is full
 int OS_FIFO_Put(uint32_t data){
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	if(CurrentSize==FSIZE){
 		LostData++;
 		return -1;					// full		
@@ -284,8 +287,7 @@ int OS_FIFO_Put(uint32_t data){
 		PutI = (PutI+1)%FSIZE;
 		OS_Signal(&CurrentSize);
 	}
-  return 0;   // success
-
+  return 0;   					// success
 }
 
 // ******** OS_FIFO_Get ************
@@ -295,7 +297,7 @@ int OS_FIFO_Put(uint32_t data){
 // Inputs:  none
 // Outputs: data retrieved
 uint32_t OS_FIFO_Get(void){uint32_t data;
-//***IMPLEMENT THIS***
+	//***IMPLEMENT THIS***
 	OS_Wait(&CurrentSize);		// block if empty
 	data = Fifo[GetI];				// get
 	GetI = (GetI+1)%FSIZE;		// place to get next
