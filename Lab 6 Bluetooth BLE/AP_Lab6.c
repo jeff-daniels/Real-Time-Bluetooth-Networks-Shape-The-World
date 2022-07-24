@@ -247,7 +247,30 @@ void BuildAddCharDescriptorMsg(char name[], uint8_t *msg){
 // for a hint see NPI_AddCharDescriptor in AP.c
 // for a hint see second half of AP_AddCharacteristic
 //****You implement this function as part of Lab 6*****
-  
+  int i, string_length;
+
+	// determine string_length of name
+	i=0;
+	while((i<20)&&(name[i])){
+    msg[11+i] = name[i]; i++;
+  }
+	string_length = i+1;
+
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;							// SOF
+	*pt = 6+string_length;	pt++;	// LSB length determined at run time, 6+string_length					
+	*pt = 0x00;	pt++;							// MSB length
+	*pt = 0x35;	pt++;							// SNP Add Characteristic Descriptor	CMD0
+	*pt = 0x83;	pt++;							// 																		CMD1
+	*pt = 0x80; pt++;							// User Description String
+	*pt = 0x01; pt++; 						// GATT Read Permission, 0=none,1=read,2=write, 3=Read+write
+	*pt = string_length;	pt++;		// string length
+	*pt = 0;	pt++;
+	*pt = string_length;	pt++;		// string length
+  *pt = 0;	pt++;
+	msg[11+i] = 0;								// Because
+	SetFCS(msg);									// FCS
   
 }
 
