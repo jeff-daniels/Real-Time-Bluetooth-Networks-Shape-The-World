@@ -117,6 +117,14 @@ uint32_t Lab6_GetStatus(void){volatile int r; uint8_t sendMsg[8];
 void BuildGetVersionMsg(uint8_t *msg){
 // hint: see NPI_GetVersion in AP.c
 //****You implement this function as part of Lab 6*****
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;	// SOF
+	*pt = 0x00;	pt++;	// LSB length = 0						
+	*pt = 0x00;	pt++;	// MSB length
+	*pt = 0x35;	pt++;	// SNP Get Status	CMD0
+	*pt = 0x03;	pt++;	// 								CMD1
+	SetFCS(msg);					// FCS
   
   
 }
