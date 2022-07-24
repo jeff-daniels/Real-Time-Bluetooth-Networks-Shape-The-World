@@ -215,8 +215,24 @@ void BuildAddCharValueMsg(uint16_t uuid,
 // for a hint see NPI_AddCharValue in AP.c
 // for a hint see first half of AP_AddCharacteristic and first half of AP_AddNotifyCharacteristic
 //****You implement this function as part of Lab 6*****
-  
-    
+
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;				// SOF
+	*pt = 0x08;	pt++;				// LSB length=8						
+	*pt = 0x00;	pt++;				// MSB length
+	*pt = 0x35;	pt++;				// SNP Add Characteristic Value	CMD0
+	*pt = 0x82;	pt++;				// 															CMD1
+	*pt = permission; pt++;	// 0=none,1=read,2=write, 3=Read+write, GATT Permission
+	*pt = properties; pt++; // 2=read,8=write,0x0A=read+write,0x10=notify, GATT Properties
+	*pt = 0x00; pt++;				// Placeholder
+	*pt = 0x00;	pt++;				// RFU=0
+	*pt = 0x00; pt++;				// Maximum length of the attribute value=512
+	*pt = 0x02; pt++;				// Maximum length of the attribute value=512
+	*pt = uuid&0xFF; pt++;	// UUID parameter
+	*pt = uuid>>8; pt++;		// UUID parameter
+	SetFCS(msg);						// FCS
+	
 }
 
 //*************BuildAddCharDescriptorMsg**************
