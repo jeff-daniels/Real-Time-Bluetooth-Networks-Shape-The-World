@@ -147,7 +147,17 @@ uint32_t Lab6_GetVersion(void){volatile int r;uint8_t sendMsg[8];
 // build the necessary NPI message that will add a service
 void BuildAddServiceMsg(uint16_t uuid, uint8_t *msg){
 //****You implement this function as part of Lab 6*****
-  
+  uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;					// SOF
+	*pt = 0x03;	pt++;					// LSB length = 3						
+	*pt = 0x00;	pt++;					// MSB length
+	*pt = 0x35;	pt++;					// SNP Add Service	CMD0
+	*pt = 0x81;	pt++;					// 									CMD1
+	*pt = 0x01;	pt++;					// Primary Service
+	*pt = uuid & 0xFF; pt++;	// UUID parameter
+	*pt = uuid >> 8; pt++;		// UUID parameter
+	SetFCS(msg);							// FCS
   
 }
 //*************Lab6_AddService**************
