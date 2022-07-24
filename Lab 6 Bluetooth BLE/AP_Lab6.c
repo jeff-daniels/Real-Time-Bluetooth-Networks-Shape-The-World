@@ -178,7 +178,14 @@ int Lab6_AddService(uint16_t uuid){ int r; uint8_t sendMsg[12];
 // build the necessary NPI message that will register a service
 void BuildRegisterServiceMsg(uint8_t *msg){
 //****You implement this function as part of Lab 6*****
-  
+  uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;	// SOF
+	*pt = 0x00;	pt++;	// LSB length = 0						
+	*pt = 0x00;	pt++;	// MSB length
+	*pt = 0x35;	pt++;	// SNP Get Status	CMD0
+	*pt = 0x84;	pt++;	// 								CMD1
+	SetFCS(msg);					// FCS
   
 }
 //*************Lab6_RegisterService**************
