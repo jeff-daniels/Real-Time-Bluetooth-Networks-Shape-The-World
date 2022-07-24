@@ -49,6 +49,8 @@ typedef struct NotifyCharacteristics{
 extern const uint32_t NOTIFYMAXCHARACTERISTICS;
 extern uint32_t NotifyCharacteristicCount;
 extern NotifyCharacteristic_t NotifyCharacteristicList[];
+
+
 //**************Lab 6 routines*******************
 // **********SetFCS**************
 // helper function, add check byte to message
@@ -60,6 +62,18 @@ extern NotifyCharacteristic_t NotifyCharacteristicList[];
 // Outputs: none
 void SetFCS(uint8_t *msg){
 //****You implement this function as part of Lab 6*****
+	uint32_t size = AP_GetSize(msg);
+	uint8_t data;
+	uint8_t fcs = 0;
+  msg++;														// SOF
+  data=*msg; fcs=fcs^data; msg++;   // LSB length
+  data=*msg; fcs=fcs^data; msg++;   // MSB length
+  data=*msg; fcs=fcs^data; msg++;   // CMD0
+  data=*msg; fcs=fcs^data; msg++;   // CMD1
+  for(int i=0;i<size;i++){
+    data=*msg; fcs=fcs^data; msg++; // payload
+  }
+  *msg = fcs;                      // FCS stored at last entry in message
 
   
 }
@@ -71,8 +85,14 @@ void SetFCS(uint8_t *msg){
 void BuildGetStatusMsg(uint8_t *msg){
 // hint: see NPI_GetStatus in AP.c
 //****You implement this function as part of Lab 6*****
-
-  
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;	// SOF
+	*pt = 0x00;	pt++;	// LSB length = 0						
+	*pt = 0x00;	pt++;	// MSB length
+	*pt = 0x55;	pt++;	// SNP Get Status	CMD0
+	*pt = 0x06;	pt++;	// 								CMD1
+	SetFCS(msg);					// FCS
 }
 //*************Lab6_GetStatus**************
 // Get status of connection, used in Lab 6
