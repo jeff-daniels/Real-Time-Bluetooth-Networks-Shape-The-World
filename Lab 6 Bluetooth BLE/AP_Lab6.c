@@ -327,7 +327,31 @@ void BuildAddNotifyCharDescriptorMsg(char name[], uint8_t *msg){
 // for a hint see NPI_AddCharDescriptor4 in VerySimpleApplicationProcessor.c
 // for a hint see second half of AP_AddNotifyCharacteristic
 //****You implement this function as part of Lab 6*****
-  
+  int i, string_length;
+
+	// determine string_length of name
+	i=0;
+	while((i<19)&&(name[i])){
+    msg[12+i] = name[i]; i++;
+  }
+	string_length = i+1;
+
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;							// SOF
+	*pt = 7+string_length;	pt++;	// LSB length determined at run time, 6+string_length					
+	*pt = 0x00;	pt++;							// MSB length
+	*pt = 0x35;	pt++;							// SNP Add Characteristic Descriptor	CMD0
+	*pt = 0x83;	pt++;							// 																		CMD1
+	*pt = 0x84; pt++;							// User Description String
+	*pt = 0x03; pt++;							// CCD parameters read+write
+	*pt = 0x01; pt++; 						// GATT Read Permission, 0=none,1=read,2=write, 3=Read+write
+	*pt = string_length;	pt++;		// string length
+	*pt = 0;	pt++;
+	*pt = string_length;	pt++;		// string length
+  *pt = 0;	pt++;
+	msg[12+i] = 0;								// Because
+	SetFCS(msg);									// FCS
   
 }
   
