@@ -339,7 +339,7 @@ void BuildAddNotifyCharDescriptorMsg(char name[], uint8_t *msg){
 	uint8_t *pt;
 	pt = msg;
 	*pt = SOF;	pt++;							// SOF
-	*pt = 7+string_length;	pt++;	// LSB length determined at run time, 6+string_length					
+	*pt = 7+string_length;	pt++;	// LSB length determined at run time, 7+string_length					
 	*pt = 0x00;	pt++;							// MSB length
 	*pt = 0x35;	pt++;							// SNP Add Characteristic Descriptor	CMD0
 	*pt = 0x83;	pt++;							// 																		CMD1
@@ -402,7 +402,26 @@ void BuildSetDeviceNameMsg(char name[], uint8_t *msg){
 // for a hint see NPI_GATTSetDeviceName in AP.c
 //****You implement this function as part of Lab 6*****
   
-  
+  int i, string_length;
+
+	// determine string_length of name
+	i=0;
+	while((i<20)&&(name[i])){
+    msg[8+i] = name[i]; i++;
+  }
+	string_length = i+1;
+
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;							// SOF
+	*pt = 2+string_length;	pt++;	// LSB length determined at run time, 2+string_length					
+	*pt = 0x00;	pt++;							// MSB length
+	*pt = 0x35;	pt++;							// SNP Add Characteristic Descriptor	CMD0
+	*pt = 0x8C;	pt++;							// 																		CMD1
+	*pt = 0x01; pt++;							// Generic Access Service
+	*pt	= 0x00; pt++;							// Device Name
+	*pt = 0x00; pt++;							// Device Name
+	SetFCS(msg);									// FCS
 }
 //*************BuildSetAdvertisementData1Msg**************
 // Create a Set Advertisement Data message, used in Lab 6
