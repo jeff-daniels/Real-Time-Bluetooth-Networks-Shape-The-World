@@ -521,9 +521,30 @@ void BuildSetAdvertisementDataMsg(char name[], uint8_t *msg){
 void BuildStartAdvertisementMsg(uint16_t interval, uint8_t *msg){
 // for a hint see NPI_StartAdvertisementMsg in VerySimpleApplicationProcessor.c
 // for a hint see NPI_StartAdvertisement in AP.c
-//****You implement this function as part of Lab 6*****
-  
-  
+//****You implement this function as part of Lab 6*****		
+	uint8_t *pt;
+
+	pt = msg;
+  *pt = SOF; pt++; 								// SOF
+	*pt = 14; pt++; 								// LSB length=14
+	*pt = 0x00; pt++; 							// MSB
+  *pt = 0x55; pt++;								// SNP Start Advertisement	CMD0
+	*pt = 0x42; pt++; 							// 													CMD1
+  *pt = 0x00; pt++; 							// Connectable Undirected Advertisements
+  *pt = 0x00; pt++; 							// Advertise infinitely.
+	*pt = 0x00; pt++;
+	*pt = (interval & 0xFF); pt++; // Advertising Interval (interval * 0.625 ms=62.5ms)
+	*pt = (interval >> 8); pt++;
+  *pt = 0x00; pt++;     // Filter Policy RFU
+  *pt = 0x00; pt++;     // Initiator Address Type RFU
+	*pt = 0x00; pt++;			// RFU
+	*pt = 0x01; pt++;
+	*pt = 0x00; pt++;
+	*pt = 0x00; pt++;
+	*pt = 0x00; pt++;
+	*pt = 0xC5; pt++;
+  *pt = 0x02; pt++;     // Advertising will restart with connectable advertising when a connection is terminated
+  SetFCS(msg);					// FCS 
 }
 
 //*************Lab6_StartAdvertisement**************
