@@ -439,6 +439,25 @@ void BuildSetAdvertisementData1Msg(uint8_t *msg){
 // Key state=0
 //****You implement this function as part of Lab 6*****
   
+	uint8_t *pt;
+	pt = msg;
+	*pt = SOF;	pt++;							// SOF
+	*pt = 11;	pt++;								// LSB length=11				
+	*pt = 0x00;	pt++;							// MSB length
+	*pt = 0x55;	pt++;							// SNP Set Advertisement Data	CMD0
+	*pt = 0x43;	pt++;							// 														CMD1
+	*pt = 0x01; pt++;							// Not connected Advertisement Data
+	*pt = 0x02; pt++;							// GAP_ADTYPE_FLAGS 
+	*pt = 0x01;	pt++;							// DISCOVERABLE 
+	*pt = 0x06; pt++;							// | no BREDR  
+	*pt = 0x06; pt++;							// length
+	*pt = 0xFF; pt++;							// manufacturer specific
+	*pt = 0x0D; pt++;							// Texas Instruments Company ID
+	*pt = 0x00;	pt++;							// Texas Instruments Company ID
+	*pt = 0x03; pt++;							// TI_ST_DEVICE_ID
+	*pt = 0x00; pt++;							// TI_ST_KEY_DATA_ID
+	*pt = 0x00; pt++;							// Key State
+	SetFCS(msg);									// FCS
   
 }
 
@@ -452,8 +471,46 @@ void BuildSetAdvertisementDataMsg(char name[], uint8_t *msg){
 // for a hint see NPI_SetAdvertisementDataMsg in VerySimpleApplicationProcessor.c
 // for a hint see NPI_SetAdvertisementData in AP.c
 //****You implement this function as part of Lab 6*****
-  
-  
+
+  int i, string_length;
+ 	uint8_t *pt;
+
+	pt = msg;
+	*pt = SOF;	pt++;							// SOF
+	*pt = 0x00;	pt++;							// LSB length determined at run time					
+	*pt = 0x00;	pt++;							// MSB length
+	*pt = 0x55;	pt++;							// SNP Set Advertisement Data	CMD0
+	*pt = 0x43;	pt++;							// 														CMD1
+	*pt = 0x00; pt++;							// Scan Response Data
+	*pt = 0x00; pt++; 						// length=TBD
+	*pt = 0x09; pt++;							// type=LOCAL_NAME_COMPLETE
+	
+	// insert name here
+	i=0;
+	while((i<24)&&(name[i])){
+		*pt = name[i];
+		pt++;
+		i++;
+	}
+	string_length  = i+1;
+	
+	// connection interval range
+	*pt = 0x05; pt++;							// length of this data
+	*pt = 0x12; pt++;							// GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE
+	*pt = 0x50; pt++;							// DEFAULT_DESIRED_MIN_CONN_INTERVAL
+	*pt = 0x00; pt++;
+	*pt = 0x20; pt++;							// DEFAULT_DESIRED_MAX_CONN_INTERVAL
+	*pt = 0x03; pt++;
+
+	// Tx power level
+	*pt = 0x02; pt++;							// length of this data
+	*pt = 0x0A; pt++;							// GAP_ADTYPE_POWER_LEVEL
+	*pt = 0x00; pt++;							// 0dBm
+	*pt = 0x00; pt++;							// Because
+
+	msg[1] = string_length+11;		// LSB length=string_length+11
+	msg[6] = string_length;				// length
+	SetFCS(msg);									// FCS 
 }
 //*************BuildStartAdvertisementMsg**************
 // Create a Start Advertisement Data message, used in Lab 6
