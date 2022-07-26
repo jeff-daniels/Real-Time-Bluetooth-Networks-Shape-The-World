@@ -28,4 +28,8 @@ This was done on four layers of abstraction:
 4. Uppermost layer containing the main function.  
 
 ## [Lab 6: Bluetooth BLE](https://github.com/jeff-daniels/UTAustinX-Real-Time-Bluetooth-Networks-Shape-The-World/blob/main/Lab%206%20Bluetooth%20BLE/Lab6.c)  
-Bluetooth stuff  
+The objectives of Lab 6 are:
+- Interface the 2650 BLE module to the LaunchPad  
+- Develop a set of NPI message packets to support BLE communication  
+- Connect the fitness device to a cell phone  
+- Understand the concepts of service, characteristic, and advertising 
